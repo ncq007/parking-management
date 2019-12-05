@@ -1,0 +1,58 @@
+{
+  "id": "1543246",
+  "name": "贸促会",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "680985",
+      "name": "企业",
+      "font_class": "qiye",
+      "unicode": "e724",
+      "unicode_decimal": 59172
+    },
+    {
+      "icon_id": "1029211",
+      "name": "修改",
+      "font_class": "edit-1-copy",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "1069760",
+      "name": "会员",
+      "font_class": "huiyuan",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "1200047",
+      "name": "党务公开",
+      "font_class": "dangwugongkai",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "6798093",
+      "name": "权限配置",
+      "font_class": "quanxianpeizhi",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "9097144",
+      "name": "聊天",
+      "font_class": "ziyuan",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "9148961",
+      "name": "列表",
+      "font_class": "weimingmingwenjianjia_liebiao",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    }
+  ]
+}
