@@ -88,13 +88,21 @@ export const constantRoutes = [
   {
     path: '/user-management',
     component: Layout,
+    meta: { title: '用户管理', icon: 'form' },
     redirect: '/user-management',
     children: [
       {
         path: '',
         name: 'user-management',
         component: () => import('@/views/user-management/index'),
-        meta: { title: '用户管理', icon: 'dashboard' }
+        meta: { title: '用户管理', icon: 'dashboard', breadcrumb: false }
+      },
+      {
+        path: 'user-add',
+        component: () => import('@/views/user-management/add'),
+        name: 'user-add',
+        meta: { title: '新增用户' },
+        hidden: true
       }
     ]
   },
