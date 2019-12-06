@@ -5,7 +5,7 @@
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
-        <breadcrumb class="breadcrumb-container" />
+        <!-- <breadcrumb class="breadcrumb-container" /> -->
       </div>
       <app-main />
     </div>
@@ -13,14 +13,14 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb'
+// import Breadcrumb from '@/components/Breadcrumb'
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
   name: 'Layout',
   components: {
-    Breadcrumb,
+    // Breadcrumb,
     Navbar,
     Sidebar,
     AppMain

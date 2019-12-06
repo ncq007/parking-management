@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '武汉市贸促会后台管理系统',
+  title: '停车缴费管理系统',
 
   /**
    * @type {boolean} true | false

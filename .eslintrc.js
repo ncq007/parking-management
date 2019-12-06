@@ -1,16 +1,9 @@
 module.exports = {
   root: true,
-  parserOptions: {
-    parser: 'babel-eslint',
-    sourceType: 'module'
-  },
   env: {
-    browser: true,
-    node: true,
-    es6: true,
+    node: true
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
-
+  extends: ['plugin:vue/essential', 'eslint:recommended'],
   rules: {
     /**
      * “off”或者0: 不启用这个规则
@@ -22,7 +15,7 @@ module.exports = {
     // 强制使用单引号
     quotes: ['error', 'single'],
     // 强制不使用分号结尾
-    semi: ['error', 'never'],
+    // semi: ['error', 'never'],
     // 空格
     'indent': 'off',
     'vue/script-indent': [

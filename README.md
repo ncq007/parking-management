@@ -1,4 +1,4 @@
-# 武汉市贸促会后台管理系统
+# 停车缴费管理系统
 
 > 本项目是基于vue-admin-template进行开发的。它只包含了 Element UI & axios & iconfont & permission control & lint，这些搭建后台必要的东西，目前版本为 `v4.0+` 基于 `vue-cli` 进行构建。
 

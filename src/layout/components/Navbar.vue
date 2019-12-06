@@ -2,7 +2,7 @@
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <!-- <breadcrumb class="breadcrumb-container" /> -->
+    <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
       <div class="avatar-container" >
@@ -10,7 +10,7 @@
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <img src="@/assets/images/logo.png" class="user-avatar">
         </div>
-        <div class="logout">{{ username }}</div>
+        <div class="logout">{{ name }}</div>
         <div class="logout" @click="logout">退出</div>
       </div>
     </div>
@@ -19,17 +19,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import Breadcrumb from '@/components/Breadcrumb'
+import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
-    // Breadcrumb,
+    Breadcrumb,
     Hamburger
   },
   computed: {
     ...mapGetters([
-      'username',
+      'name',
       'sidebar',
       'avatar'
     ])

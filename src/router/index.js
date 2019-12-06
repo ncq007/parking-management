@@ -43,7 +43,7 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
+  /* {
     path: '/',
     component: Layout,
     redirect: '/sectionmgt',
@@ -53,9 +53,52 @@ export const constantRoutes = [
       component: () => import('@/views/sectionmgt/index'),
       meta: { title: '栏目管理', icon: 'dashboard' }
     }]
-  },
-
+  }, */
   {
+    path: '/',
+    component: Layout,
+    redirect: '/payment-details'
+  },
+  {
+    path: '/payment-details',
+    component: Layout,
+    redirect: '/payment-details/index',
+    children: [
+      {
+        path: '',
+        name: 'payment-details',
+        component: () => import('@/views/payment-details/index'),
+        meta: { title: '缴费详情', icon: 'dashboard' }
+      }
+    ]
+  },
+  {
+    path: '/refund-management',
+    component: Layout,
+    redirect: '/refund-management',
+    children: [
+      {
+        path: '',
+        name: 'refund-management',
+        component: () => import('@/views/refund-management/index'),
+        meta: { title: '退款管理', icon: 'dashboard' }
+      }
+    ]
+  },
+  {
+    path: '/user-management',
+    component: Layout,
+    redirect: '/user-management',
+    children: [
+      {
+        path: '',
+        name: 'user-management',
+        component: () => import('@/views/user-management/index'),
+        meta: { title: '用户管理', icon: 'dashboard' }
+      }
+    ]
+  },
+  /* {
     path: '/content',
     component: Layout,
     redirect: '/content/home',
@@ -110,7 +153,7 @@ export const constantRoutes = [
         path: 'c_add',
         component: () => import('@/views/company/components/add'),
         name: 'c_add',
-        meta: { title: '新建', },
+        meta: { title: '新建' },
         hidden: true
       }
     ]
@@ -136,7 +179,7 @@ export const constantRoutes = [
         meta: { title: 'Tree', icon: 'tree' }
       }
     ]
-  },
+  }, */
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
