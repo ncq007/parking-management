@@ -1,11 +1,9 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
       <div class="title-container">
-        <h3 class="title">武汉商会后台管理系统</h3>
+        <h3 class="title">停车缴费后台管理系统</h3>
       </div>
-        
       <el-form-item prop="username">
         <el-input
           prefix-icon="el-icon-user-solid"
@@ -36,7 +34,8 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-
+import { getPublicKey } from '@/api/user'
+import JSEncrypt from 'jsencrypt'
 export default {
   name: 'Login',
   data() {
@@ -56,11 +55,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'super_admin',
+        password: 'admin@park'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
@@ -76,15 +75,39 @@ export default {
     }
   },
   methods: {
-    handleLogin() {
+    getPublicKey () {
+    },
+    // RSA 加密
+    encryption (str, pk) {
+      let pubKey = `-----BEGIN PUBLIC KEY-----
+      ${pk}
+      -----END PUBLIC KEY-----` // ES6 模板字符串 引用 rsa 公钥
+      let encryptStr = new JSEncrypt()
+      encryptStr.setPublicKey(pubKey) // 设置 加密公钥
+      let data = encryptStr.encrypt(str.toString())  // 进行加密
+      return data
+    },
+    handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
+          // 登录前要先获取公钥，用于登录时账号和密码的加密
+          getPublicKey({
+            loginName: this.loginForm.username
+          }).then(response => {
+            if (response.code === '100') {
+              // 将用户名以及密码进行加密
+              const pk = response.info
+              let username = this.loginForm.username
+              let usernameEn = this.encryption(this.loginForm.username, pk)
+              let passwordEn = this.encryption(this.loginForm.password, pk)
+              this.$store.dispatch('user/login', { username, usernameEn, passwordEn, pk }).then(() => {
+                this.$router.push({ path: this.redirect || '/' })
+                this.loading = false
+              }).catch(() => {
+                this.loading = false
+              })
+            }
           })
         } else {
           return false

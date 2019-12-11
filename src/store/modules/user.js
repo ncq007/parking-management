@@ -23,12 +23,18 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, usernameEn, passwordEn, pk } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({
+        publicKey: pk,
+        loginCode: usernameEn,
+        password: passwordEn
+      }).then(response => {
+        const { info } = response
+        commit('SET_TOKEN', info.token)
+        commit('SET_NAME', username)
+        commit('SET_AVATAR', 'http://chenqim.xyz:9001/images/img_2666.jpg')
+        setToken(info.token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -39,27 +45,36 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      const data = {
+        name: 'super_admin',
+        acatar: 'http://chenqim.xyz:9001/images/img_2666.jpg'
+      }
+      commit('SET_NAME', data.name)
+      commit('SET_AVATAR', data.acatar)
+      resolve(data)
+      // getInfo(state.token).then(response => {
+      //   const { data } = response
 
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
+      //   if (!data) {
+      //     reject('Verification failed, please Login again.')
+      //   }
 
-        const { name, avatar } = data
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      //   const { name, avatar } = data
+      //   commit('SET_NAME', name)
+      //   commit('SET_AVATAR', avatar)
+      //   resolve(data)
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout({
+        loginName: state.name
+      }).then(() => {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()

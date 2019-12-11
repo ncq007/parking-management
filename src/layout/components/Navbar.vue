@@ -7,11 +7,11 @@
     <div class="right-menu">
       <div class="avatar-container" >
         <div class="avatar-wrapper">
-          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-          <img src="@/assets/images/logo.png" class="user-avatar">
+          <img :src="avatar" class="user-avatar">
+          <!-- <img src="@/assets/images/logo.png" class="user-avatar"> -->
         </div>
         <div class="logout">{{ name }}</div>
-        <div class="logout" @click="logout">退出</div>
+        <div class="logout" @click="logout" style="cursor: pointer;">退出</div>
       </div>
     </div>
   </div>
