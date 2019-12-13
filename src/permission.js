@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import getDynamicRoutes from '@/utils/dynamic-router'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -16,11 +17,14 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-
   // determine whether the user has logged in
   const hasToken = getToken()
-  console.log('hasToken', hasToken)
   if (hasToken) {
+    if (router.options.routes.length === 2) {
+      getDynamicRoutes()
+      // 必须要释放 next()，我也不太明白为什么一定要释放，不释放会有问题
+      next({...to, replace: true})
+    }
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })

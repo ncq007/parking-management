@@ -35,6 +35,11 @@ const actions = {
         commit('SET_NAME', username)
         commit('SET_AVATAR', 'http://chenqim.xyz:9001/images/img_2666.jpg')
         setToken(info.token)
+        sessionStorage.setItem('username', username)
+        sessionStorage.setItem('menu', JSON.stringify(info.menu.filter(e => e.resourceType === '0')))
+        // 登录之后的每个接口都需要用到这两个参数，所以直接存在 sessionStorage 里面最方便
+        sessionStorage.setItem('pk', pk)
+        sessionStorage.setItem('usernameEn', usernameEn)
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,7 +51,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       const data = {
-        name: 'super_admin',
+        name: sessionStorage.getItem('username'),
         acatar: 'http://chenqim.xyz:9001/images/img_2666.jpg'
       }
       commit('SET_NAME', data.name)

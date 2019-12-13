@@ -75,8 +75,6 @@ export default {
     }
   },
   methods: {
-    getPublicKey () {
-    },
     // RSA 加密
     encryption (str, pk) {
       let pubKey = `-----BEGIN PUBLIC KEY-----

@@ -18,8 +18,8 @@
           <el-col :span="12">
             <el-form-item label="状态">
               <el-select v-model="form.status" style="width: 100%;">
-                <el-option label="状态一" value="1"></el-option>
-                <el-option label="状态二" value="2"></el-option>
+                <el-option label="启用" value="1"></el-option>
+                <el-option label="禁用" value="0"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { userList, delUserById, resetPwd } from '@/api/user-management'
 export default {
   name: '',
   data () {
@@ -67,29 +68,86 @@ export default {
         name: '',
         status: ''
       },
-      tableData: [
-        { user: 'admin1', name: '郑醒', status: '启用', updateTime: '2019-12-03 12:46:58' },
-        { user: 'admin1', name: '郑醒', status: '启用', updateTime: '2019-12-03 12:46:58' },
-        { user: 'admin1', name: '郑醒', status: '启用', updateTime: '2019-12-03 12:46:58' },
-        { user: 'admin1', name: '郑醒', status: '启用', updateTime: '2019-12-03 12:46:58' },
-        { user: 'admin1', name: '郑醒', status: '启用', updateTime: '2019-12-03 12:46:58' }
-      ],
+      tableData: [],
       currentPage: 1,
       pageSize: 20,
       total: 200
     }
   },
+  created () {
+    this.init()
+  },
   methods: {
-    edit (item) {},
-    del (item) {},
-    resetPwd (item) {},
-    query () {},
-    reset () {},
-    add () {
-      this.$router.push('/user-management/user-add')
+    init () {
+      userList({
+        userName: this.form.user,
+        realName: this.form.name,
+        status: this.form.status
+      }).then(response => {
+        console.log('userList response', response)
+        this.tableData = []
+        response.info.list.forEach(e => {
+          this.tableData.push({
+            id: e.id,
+            user: e.loginName,
+            name: e.realName,
+            status: e.statusCn,
+            updateTime: this.moment(e.updateTime).format('YYYY-MM-DD HH:mm:ss')
+          })
+        })
+        this.total = response.info.totalCount
+      })
     },
-    handleSizeChange () {},
-    handleCurrentChange () {}
+    edit (item) {
+      this.$router.push('/user-management/user-add?type=edit&id=' + item.id)
+    },
+    del (item) {
+      this.$confirm('确定要删除该用户？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delUserById({ id: item.id }).then(response => {
+          this.$message.success('删除成功！')
+          this.init()
+        })
+      }).catch(() => {})
+    },
+    resetPwd (item) {
+      this.$confirm('确定要重置该用户登录密码？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        resetPwd({ id: item.id }).then(response => {
+          this.$message.success('重置成功！')
+          this.init()
+        })
+      }).catch(() => {})
+    },
+    query () {
+      this.currentPage = 1
+      this.init()
+    },
+    reset () {
+      this.form = {
+        user: '',
+        name: '',
+        status: ''
+      }
+      this.query()
+    },
+    add () {
+      this.$router.push('/user-management/user-add?type=add')
+    },
+    handleSizeChange (size) {
+      this.pageSize = size
+      this.query()
+    },
+    handleCurrentChange (page) {
+      this.currentPage = page
+      this.init()
+    }
   }
 }
 </script>

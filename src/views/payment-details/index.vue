@@ -25,8 +25,9 @@
           <el-col :span="12">
             <el-form-item label="状态">
               <el-select v-model="form.status" style="width: 100%;">
-                <el-option label="状态一" value="1"></el-option>
-                <el-option label="状态二" value="2"></el-option>
+                <el-option label="支付成功" value="TRADE_SUCCESS"></el-option>
+                <el-option label="退款成功" value="TRADE_REFUND"></el-option>
+                <el-option label="等待买家付款" value="WAIT_BUYER_PAY"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -35,8 +36,7 @@
           <el-col :span="12">
             <el-form-item label="停车场">
               <el-select v-model="form.parkingLot" style="width: 100%;">
-                <el-option label="状态一" value="1"></el-option>
-                <el-option label="状态二" value="2"></el-option>
+                <el-option v-for="(item, index) in parkingLotList" :key="index" :label="item.parkName" :value="item.parkId"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -70,38 +70,98 @@
 </template>
 
 <script>
+import { payInfoList } from '@/api/payment-details'
+import { exp } from '@/api/download-template'
+import { listParkByLogin } from '@/api/user-management'
 export default {
   name: '',
   data () {
     return {
       form: {
         plateNumber: '',
-        inTime: '',
-        paymentTime: '',
+        inTime: ['', ''],
+        paymentTime: ['', ''],
         status: '',
         parkingLot: ''
       },
-      tableData: [
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', inTime: '2019-12-03 09:10:33', paymentTime: '2019-12-03 12:46:58', paymentAmount: '16.00', status: '已支付,通知车场成功' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', inTime: '2019-12-03 09:10:33', paymentTime: '2019-12-03 12:46:58', paymentAmount: '16.00', status: '已支付,通知车场成功' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', inTime: '2019-12-03 09:10:33', paymentTime: '2019-12-03 12:46:58', paymentAmount: '16.00', status: '已支付,通知车场成功' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', inTime: '2019-12-03 09:10:33', paymentTime: '2019-12-03 12:46:58', paymentAmount: '16.00', status: '已支付,通知车场成功' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', inTime: '2019-12-03 09:10:33', paymentTime: '2019-12-03 12:46:58', paymentAmount: '16.00', status: '已支付,通知车场成功' }
-      ],
+      tableData: [],
+      parkingLotList: [],
       currentPage: 1,
-      pageSize: 20,
-      total: 200
+      pageSize: 10,
+      total: 0
     }
   },
+  created () {
+    this.init()
+    this.getParkingLotList()
+  },
   methods: {
-    edit (item) {},
-    del (item) {},
-    resetPwd (item) {},
-    query () {},
-    reset () {},
-    exp () {},
-    handleSizeChange () {},
-    handleCurrentChange () {}
+    init () {
+      payInfoList({
+        carCode: this.form.plateNumber,
+        inTimeS: this.form.inTime[0],
+        inTimeE: this.form.inTime[1],
+        payTimeS: this.form.paymentTime[0],
+        payTimeE: this.form.paymentTime[1],
+        status: this.form.status,
+        parkId: this.form.parkingLot,
+        pageRow: this.pageSize,
+        pageNum: this.currentPage
+      }).then(response => {
+        console.log('payInfoList response', response)
+        this.tableData = []
+        response.info.list.forEach(e => {
+          this.tableData.push({
+            parkingLot: e.parkName,
+            plateNumber: e.carCode,
+            inTime: this.moment(e.inTime).format('YYYY-MM-DD HH:mm:ss'),
+            paymentTime: this.moment(e.payTime).format('YYYY-MM-DD HH:mm:ss'),
+            paymentAmount: e.paidMoney,
+            status: e.statusCn
+          })
+        })
+        this.total = response.info.totalCount
+      })
+    },
+    getParkingLotList () {
+      listParkByLogin({ parkName: '' }).then(response => {
+        console.log('getParkingLotList response', response)
+        this.parkingLotList = response.info
+      })
+    },
+    query () {
+      this.currentPage = 1
+      this.init()
+    },
+    reset () {
+      this.form = {
+        plateNumber: '',
+        inTime: ['', ''],
+        paymentTime: ['', ''],
+        status: '',
+        parkingLot: ''
+      }
+      this.query()
+    },
+    exp () {
+      exp('/payInfo/export', {
+        carCode: this.form.plateNumber,
+        inTimeS: this.form.inTime[0],
+        inTimeE: this.form.inTime[1],
+        payTimeS: this.form.paymentTime[0],
+        payTimeE: this.form.paymentTime[1],
+        status: this.form.status,
+        parkId: this.form.parkingLot
+      }, '缴费详情')
+    },
+    handleSizeChange (size) {
+      this.pageSize = size
+      this.query()
+    },
+    handleCurrentChange (page) {
+      this.currentPage = page
+      this.init()
+    }
   }
 }
 </script>

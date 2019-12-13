@@ -24,8 +24,7 @@
           <el-col :span="12">
             <el-form-item label="停车场">
               <el-select v-model="form.parkingLot" style="width: 100%;">
-                <el-option label="状态一" value="1"></el-option>
-                <el-option label="状态二" value="2"></el-option>
+                <el-option v-for="(item, index) in parkingLotList" :key="index" :label="item.parkName" :value="item.parkId"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -58,6 +57,9 @@
 </template>
 
 <script>
+import { refundInfoList } from '@/api/refund-management'
+import { exp } from '@/api/download-template'
+import { listParkByLogin } from '@/api/user-management'
 export default {
   name: '',
   data () {
@@ -65,30 +67,79 @@ export default {
       form: {
         plateNumber: '',
         orderNumber: '',
-        refundTime: '',
+        refundTime: ['', ''],
         parkingLot: ''
       },
-      tableData: [
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', orderNumber: '1002891821234', refundAmount: '16.00', refundTime: '2019-12-03 12:46:58' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', orderNumber: '1002891821234', refundAmount: '16.00', refundTime: '2019-12-03 12:46:58' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', orderNumber: '1002891821234', refundAmount: '16.00', refundTime: '2019-12-03 12:46:58' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', orderNumber: '1002891821234', refundAmount: '16.00', refundTime: '2019-12-03 12:46:58' },
-        { parkingLot: '中建光谷之星', plateNumber: '鄂A L7989', orderNumber: '1002891821234', refundAmount: '16.00', refundTime: '2019-12-03 12:46:58' }
-      ],
+      tableData: [],
+      parkingLotList: [],
       currentPage: 1,
-      pageSize: 20,
-      total: 200
+      pageSize: 10,
+      total: 0
     }
   },
+  created () {
+    this.init()
+    this.getParkingLotList()
+  },
   methods: {
-    edit (item) {},
-    del (item) {},
-    resetPwd (item) {},
-    query () {},
-    reset () {},
-    exp () {},
-    handleSizeChange () {},
-    handleCurrentChange () {}
+    init () {
+      refundInfoList({
+        carCode: this.form.plateNumber,
+        orderId: this.form.orderNumber,
+        refundTimeS: this.form.refundTime[0],
+        refundTimeE: this.form.refundTime[1],
+        parkId: this.form.parkingLot
+      }).then(response => {
+        console.log('refundInfo response', response)
+        this.tableData = []
+        response.info.list.forEach(e => {
+          this.tableData.push({
+            parkingLot: e.parkName,
+            plateNumber: e.carCode,
+            orderNumber: e.orderId,
+            refundAmount: e.paidMoney,
+            refundTime: this.moment(e.refundTime).format('YYYY-MM-DD HH:mm:ss')
+          })
+        })
+        this.total = response.info.totalCount
+      })
+    },
+    getParkingLotList () {
+      listParkByLogin({ parkName: '' }).then(response => {
+        console.log('getParkingLotList response', response)
+        this.parkingLotList = response.info
+      })
+    },
+    query () {
+      this.currentPage = 1
+      this.init()
+    },
+    reset () {
+      this.form = {
+        plateNumber: '',
+        orderNumber: '',
+        refundTime: ['', ''],
+        parkingLot: ''
+      }
+      this.query()
+    },
+    exp () {
+      exp('/refundInfo/export', {
+        carCode: this.form.plateNumber,
+        orderId: this.form.orderNumber,
+        refundTimeS: this.form.refundTime[0],
+        refundTimeE: this.form.refundTime[1],
+        parkId: this.form.parkingLot
+      }, '退款管理')
+    },
+    handleSizeChange (size) {
+      this.pageSize = size
+      this.query()
+    },
+    handleCurrentChange (page) {
+      this.currentPage = page
+      this.init()
+    }
   }
 }
 </script>

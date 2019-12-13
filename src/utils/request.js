@@ -19,7 +19,9 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = getToken()
+      config.headers['publicKey'] = sessionStorage.getItem('pk')
+      config.headers['loginCode'] = sessionStorage.getItem('usernameEn')
     }
     return config
   },
@@ -44,20 +46,21 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== '100') {
+    // code 为 100 说明返回的是正确的结果，type 为 application/octet-stream 说是导出 excel 文件
+    if (res.code === '100' || res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      return res
+    } else {
       Message({
-        message: res.message || 'Error',
+        message: res.msg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      // 30062：秘钥失效，30076：解密用户失败
+      if (res.code === '30062' || res.code === '30076') {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm(res.msg + '，请重新登录！', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -66,8 +69,6 @@ service.interceptors.response.use(
         })
       }
       return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
     }
   },
   error => {
