@@ -37,7 +37,7 @@ const actions = {
         setToken(info.token)
         sessionStorage.setItem('username', username)
         sessionStorage.setItem('menu', JSON.stringify(info.menu.filter(e => e.resourceType === '0')))
-        // 登录之后的每个接口都需要用到这两个参数，所以直接存在 sessionStorage 里面最方便
+        // 登录之后有些地方需要用到这两个参数，所以直接存在 sessionStorage 里面最方便
         sessionStorage.setItem('pk', pk)
         sessionStorage.setItem('usernameEn', usernameEn)
         resolve()
@@ -83,6 +83,8 @@ const actions = {
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()
+        sessionStorage.clear()
+        window.location.reload()
         resolve()
       }).catch(error => {
         reject(error)

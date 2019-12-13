@@ -6,16 +6,19 @@
       </div>
       <el-form-item prop="username">
         <el-input
+          class="pl20"
           prefix-icon="el-icon-user-solid"
           v-model="loginForm.username"
           placeholder="账号"
           type="text"
           tabindex="1"
           auto-complete="on"
+          @change="usernameChange"
         />
       </el-form-item>
       <el-form-item prop="password">
         <el-input
+          class="pl20"
           prefix-icon="el-icon-lock"
           v-model="loginForm.password"
           type="password"
@@ -26,7 +29,7 @@
         />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
     </el-form>
   </div>
@@ -63,7 +66,8 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
-      redirect: undefined
+      redirect: undefined,
+      flag: false
     }
   },
   watch: {
@@ -75,6 +79,9 @@ export default {
     }
   },
   methods: {
+    usernameChange () {
+      this.flag = true
+    },
     // RSA 加密
     encryption (str, pk) {
       let pubKey = `-----BEGIN PUBLIC KEY-----
@@ -100,7 +107,9 @@ export default {
               let usernameEn = this.encryption(this.loginForm.username, pk)
               let passwordEn = this.encryption(this.loginForm.password, pk)
               this.$store.dispatch('user/login', { username, usernameEn, passwordEn, pk }).then(() => {
-                this.$router.push({ path: this.redirect || '/' })
+                // 如果不进行以下判断的话，切换用户之后会跳到上一个用户用的路由，会造成第一次登录就 404 的情况
+                if (this.flag) this.$router.push('/')
+                else this.$router.push({ path: this.redirect || '/' })
                 this.loading = false
               }).catch(() => {
                 this.loading = false
