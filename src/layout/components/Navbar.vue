@@ -7,7 +7,7 @@
     <div class="right-menu">
       <div class="avatar-container" >
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
+          <!-- <img :src="avatar" class="user-avatar"> -->
           <!-- <img src="@/assets/images/logo.png" class="user-avatar"> -->
         </div>
         <div class="logout">{{ name }}</div>

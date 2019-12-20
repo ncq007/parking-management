@@ -45,9 +45,10 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log('resres', response)
     const res = response.data
     // code 为 100 说明返回的是正确的结果，type 为 application/octet-stream 说是导出 excel 文件
-    if (res.code === '100' || res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    if (res.code === '100' || res.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || res.type === 'application/octet-stream') {
       return res
     } else {
       Message({

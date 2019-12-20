@@ -23,17 +23,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
+            <!-- <el-form-item label="状态">
               <el-select v-model="form.status" style="width: 100%;">
                 <el-option label="支付成功" value="TRADE_SUCCESS"></el-option>
                 <el-option label="退款成功" value="TRADE_REFUND"></el-option>
                 <el-option label="等待买家付款" value="WAIT_BUYER_PAY"></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
+            </el-form-item> -->
             <el-form-item label="停车场">
               <el-select v-model="form.parkingLot" style="width: 100%;">
                 <el-option v-for="(item, index) in parkingLotList" :key="index" :label="item.parkName" :value="item.parkId"></el-option>
@@ -51,6 +47,11 @@
           <el-button @click="reset">重 置</el-button>
         </el-col>
       </el-row>
+      <div class="mt20 tr" style="font-weight: 500;">
+        <span>表格数据总计：{{ fee.total }} 条</span>
+        <span class="ml20">车辆总计：{{ fee.totalCar }} 辆</span>
+        <span class="ml20">费用总计：{{ fee.totalMoney }} 元</span>
+      </div>
       <el-table class="mt20" :data="tableData" :header-cell-style="{ 'background-color': '#ebeef5' }" style="width: 100%">
         <el-table-column prop="parkingLot" label="停车场" align="center"></el-table-column>
         <el-table-column prop="plateNumber" label="车牌号" align="center"></el-table-column>
@@ -84,6 +85,7 @@ export default {
         status: '',
         parkingLot: ''
       },
+      fee: {},
       tableData: [],
       parkingLotList: [],
       currentPage: 1,
@@ -121,6 +123,7 @@ export default {
           })
         })
         this.total = response.info.totalCount
+        this.fee = response.info.total
       })
     },
     getParkingLotList () {

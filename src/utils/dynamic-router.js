@@ -21,7 +21,7 @@ const generateDynamicRoutes = () => {
             path: '',
             name: 'payment-details',
             component: () => import('@/views/payment-details/index'),
-            meta: { title: '缴费详情', icon: 'dashboard' }
+            meta: { title: '缴费详情', icon: 'nested' }
           }
         ]
       })
@@ -35,7 +35,7 @@ const generateDynamicRoutes = () => {
             path: '',
             name: 'refund-management',
             component: () => import('@/views/refund-management/index'),
-            meta: { title: '退款记录', icon: 'dashboard' }
+            meta: { title: '退款记录', icon: 'example' }
           }
         ]
       },)
@@ -43,14 +43,14 @@ const generateDynamicRoutes = () => {
       dynamicRoutes.push({
         path: '/user-management',
         component: Layout,
-        meta: { title: '用户管理', icon: 'form' },
+        meta: { title: '用户管理' },
         redirect: '/user-management',
         children: [
           {
             path: '',
             name: 'user-management',
             component: () => import('@/views/user-management/index'),
-            meta: { title: '用户管理', icon: 'dashboard', breadcrumb: false }
+            meta: { title: '用户管理', icon: 'user', breadcrumb: false }
           },
           {
             path: 'user-add',
