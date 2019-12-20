@@ -7,7 +7,7 @@ const dynamicRoutes = []
 
 const generateDynamicRoutes = () => {
   // 先从 sessionStorage 获取该用户所拥有的权限菜单
-  const menuStr = sessionStorage.getItem('menu')
+  const menuStr = localStorage.getItem('menu')
   const menu = JSON.parse(menuStr)
   // 匹配该用户到底有哪些路由的权限
   menu.forEach(element => {

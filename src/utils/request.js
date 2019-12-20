@@ -56,8 +56,8 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-      // 30062：秘钥失效，30076：解密用户失败
-      if (res.code === '30062' || res.code === '30076') {
+      // 30062：秘钥失效，30076：解密用户失败，30072：无公钥，30075：缓存不存在
+      if (res.code === '30062' || res.code === '30076' || res.code === '30072' || res.code === '30075') {
         // to re-login
         MessageBox.confirm(res.msg + '，请重新登录！', {
           confirmButtonText: '重新登录',

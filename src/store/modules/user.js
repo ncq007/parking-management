@@ -36,7 +36,7 @@ const actions = {
         commit('SET_AVATAR', 'http://chenqim.xyz:9001/images/img_2666.jpg')
         setToken(info.token)
         sessionStorage.setItem('username', username)
-        sessionStorage.setItem('menu', JSON.stringify(info.menu.filter(e => e.resourceType === '0')))
+        localStorage.setItem('menu', JSON.stringify(info.menu.filter(e => e.resourceType === '0')))
         // 登录之后有些地方需要用到这两个参数，所以直接存在 sessionStorage 里面最方便
         sessionStorage.setItem('pk', pk)
         sessionStorage.setItem('usernameEn', usernameEn)
@@ -84,6 +84,7 @@ const actions = {
         removeToken()
         resetRouter()
         sessionStorage.clear()
+        localStorage.clear()
         window.location.reload()
         resolve()
       }).catch(error => {

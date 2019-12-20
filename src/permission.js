@@ -19,6 +19,7 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
   // determine whether the user has logged in
   const hasToken = getToken()
+  console.log('hasToken', hasToken)
   if (hasToken) {
     if (router.options.routes.length === 2) {
       getDynamicRoutes()
